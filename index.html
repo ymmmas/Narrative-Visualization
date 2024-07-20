@@ -6,12 +6,12 @@
     <title>Narrative Visualization</title>
 </head>
 
-<body>
+<body onload="init()">
     <!-- load d3 -->
     <script src='https://d3js.org/d3.v5.min.js'></script>
 
     <!-- load js for cur page -->
-    <script src=""></script>
+    <script src="index.js"></script>
 
     <!-- load d3 annotation -->
     <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
@@ -24,7 +24,9 @@
 
     <!-- chart container -->
     <div id="chart">
-        <br>
+        <!-- outer (include axis) 700x800, inner (only chart data) 600x600 -->
+        <svg width=800 height=700>
+        </svg>
     </div>
 
     <!-- explantation /filter container (right or bottom)-->

@@ -11,7 +11,8 @@
     <script src='https://d3js.org/d3.v5.min.js'></script>
 
     <!-- load js for cur page -->
-    <script src="MPG-scatter.js"></script>
+    <!-- <script src="MPG-scatter.js"></script> -->
+    <script src="MPG-bar.js"></script>
 
     <!-- load d3 annotation -->
     <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
@@ -19,7 +20,7 @@
     <!-- overview container -->
     <div id=AverageHighwayMPG class="data-value">
         <h1>HighwayMPG MPG & cylinders
-            <a href="highwaybar.html">
+            <a href="index.html">
                 <button class="nextButton" onclick="">Next</button>
             </a> 
         </h1>
@@ -28,7 +29,7 @@
 
     <!-- chart container -->
     <div id="chart">
-
+        <style> rect {fill: lightblue; } </style>
         <!-- outer (include axis) 700x800, inner (only chart data) 600x600 -->
         <svg width=800 height=700>
         </svg>

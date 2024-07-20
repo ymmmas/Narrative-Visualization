@@ -34,7 +34,11 @@ async function init() {
     ),
   ];
   
-  color = d3.scaleOrdinal(fuels, ['red', 'green', 'blue']);
+  color = d3.scaleOrdinal(
+    ['Gasoline',  'Electricity','Diesel'],
+    ['yellow', 'orange', 'blue']
+  );
+  console.log(color('Diesel'));
 
   //scatter plot
   //create g
@@ -58,13 +62,14 @@ async function init() {
       return 5;
     })
     .style('fill', function (d, i) {
+        console.log('blue' + color(d.Fuel));
       return color(d.Fuel);
     });
 
   //y axis
   d3.select('svg')
     .append('g')
-    .attr('transform', 'translate(' + margin.x + ',' + margin.y + ')')
+    .attr('transform', 'translate(' + margin.x + ',' + (margin.y - 5) + ')')
     .call(d3.axisLeft(y));
 
   //x axis, y translate value is range+margin (need to be placed at bottom)

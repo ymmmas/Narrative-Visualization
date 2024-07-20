@@ -1,11 +1,18 @@
 async function init() {
   // AWAIT! for data
   data = await d3.csv('https://flunky.github.io/cars2017.csv');
-  
+  // sort based on # cylinders
+  data.sort((a, b) => {
+    return b['EngineCylinders'] - a['EngineCylinders'];
+  });
+
   //outer (include axis) 700x800, inner (only chart data) 600x600
   margin = { x: 100, y: 50 }; //padding
   inner_chart = { x: 600, y: 600 };
+
+  //domain:  values of x axis (# of cylinders), range of inner chart
   x = d3.scaleLinear().domain([-1, 12]).range([0, inner_chart.x]);
+  //domain: values of y axis (different make brands), range of inner chart
   y = d3
     .scaleBand()
     .domain(
@@ -15,6 +22,21 @@ async function init() {
     )
     .range([inner_chart.y, 0]);
 
+//   color = d3
+//     .scaleOrdinal()
+//     .domain(['Gasoline', 'Diesel', 'Electricity'])
+//     .range(['orange', 'green', 'purple']);
+  fuels = [
+    ...new Set(
+      data.map((d) => {
+        return d.Fuel;
+      })
+    ),
+  ];
+  
+  color = d3.scaleOrdinal(fuels, ['red', 'green', 'blue']);
+
+  //scatter plot
   //create g
   d3.select('svg')
     .append('g')
@@ -31,8 +53,12 @@ async function init() {
     .attr('cy', function (d, i) {
       return y(d.Make);
     })
+    //Number(d.EngineCylinders) + 2.5
     .attr('r', function (d, i) {
-      return Number(d.EngineCylinders) + 2;
+      return 5;
+    })
+    .style('fill', function (d, i) {
+      return color(d.Fuel);
     });
 
   //y axis

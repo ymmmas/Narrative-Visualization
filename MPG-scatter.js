@@ -1,4 +1,7 @@
 async function init() {
+  //find out cur y-value from html id
+  value = document.getElementsByClassName('data-value')[0].id;
+
   // AWAIT! for data
   data = await d3.csv('https://flunky.github.io/cars2017.csv');
 
@@ -27,7 +30,7 @@ async function init() {
       return x(d.EngineCylinders);
     })
     .attr('cy', function (d, i) {
-      return y(d.AverageCityMPG);
+      return y(d[value]);
     })
     //Number(d.EngineCylinders) + 2.5
     .attr('r', function (d, i) {

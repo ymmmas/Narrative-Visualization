@@ -3,7 +3,16 @@ function averageData(cylinders, data) {
     const cyData = data.filter((d) => {
       return d.EngineCylinders == c;
     });
-
+    const meanAverageCityMPG = d3.mean(
+      cyData.map((d) => {
+        return d.AverageCityMPG;
+      })
+    );
+    const meanAverageHighwayMPG = d3.mean(
+      cyData.map((d) => {
+        return d.AverageHighwayMPG;
+      })
+    );
     // const meanEngineCylinders = d3.mean(
     //   cyData.map((d) => {
     //     return d.EngineCylinders;
@@ -12,43 +21,30 @@ function averageData(cylinders, data) {
     const makeList = cyData.map((d) => {
       return d.Make;
     });
+    console.log({
+      EngineCylinders: c,
+      Make: data.Make,
+      makeList: makeList,
+      AverageCityMPG: data.AverageCityMPG,
+      meanAverageCityMPG: meanAverageCityMPG,
+      AverageHighwayMPG: data.AverageHighwayMPG,
+      meanAverageHighwayMPG: meanAverageHighwayMPG,
+      AverageMPG: (meanAverageCityMPG + meanAverageHighwayMPG) / 2.0,
+    });
 
     return {
       EngineCylinders: c,
+      Make: data.Make,
       makeList: makeList,
+      AverageCityMPG: data.AverageCityMPG,
       meanAverageCityMPG: meanAverageCityMPG,
+      AverageHighwayMPG: data.AverageHighwayMPG,
       meanAverageHighwayMPG: meanAverageHighwayMPG,
       AverageMPG: (meanAverageCityMPG + meanAverageHighwayMPG) / 2.0,
     };
   });
 
   return avgData;
-}
-
-function addFuelList(data) {
-  var newData = [];
-  var FuelDict = {}; //'MakeCylinderCount': [Fuels]
-  for (const row of data) {
-    var newRowData = {};
-
-    m = row.Make;
-    c = row.EngineCylinders;
-    if (m + c in FuelDict) {
-      FuelDict[m + c].push(row.Fuel);
-    } else {
-      FuelDict[m + c] = [row.Fuel];
-    }
-
-    newRowData.Make = m;
-    newRowData.EngineCylinders = c;
-    newRowData.FuelList = FuelDict[m + c];
-    newRowData.AverageCityMPG = row.AverageCityMPG;
-    newRowData.AverageHighwayMPG = row.AverageHighwayMPG;
-    newRowData.Fuel = row.Fuel;
-
-    newData.push(newRowData);
-  }
-  return newData;
 }
 
 async function init() {
@@ -63,14 +59,14 @@ async function init() {
     ),
   ];
 
-  //   data = averageData(cylinders, data);
-  data = addFuelList(data);
-  console.log(data);
+  data = averageData(cylinders, data);
 
   // sort based on # cylinders
   data.sort((a, b) => {
     return b['EngineCylinders'] - a['EngineCylinders'];
   });
+
+  console.log(data); // NEED TO FIX VALUES THAT ARE NOT MEAN
 
   //outer (include axis) 700x800, inner (only chart data) 600x600
   margin = { x: 100, y: 50 }; //padding
@@ -99,7 +95,7 @@ async function init() {
   // bind fuel type to value
   color = d3.scaleOrdinal(
     ['Gasoline', 'Electricity', 'Diesel'],
-    ['red', 'orange', 'blue']
+    ['pink', 'orange', 'blue']
   );
 
   //scatter plot
@@ -125,17 +121,14 @@ async function init() {
     })
     //fill in color based on fuel type
     .style('fill', function (d, i) {
-      if (d.FuelList.includes('Gasoline') && d.FuelList.includes('Diesel')) {
-        return 'blue';
-      }
       return color(d.Fuel);
     })
     .style('opacity', function (d, i) {
-        if (d.FuelList.length >1) {
-        return 0.7;
-        } else {
-        return 0.5;
-        }
+      if (d.Fuel == 'Diesel') {
+        return 1;
+      } else {
+        return 0.6;
+      }
     });
   // .style('opacity', 0.7);
 

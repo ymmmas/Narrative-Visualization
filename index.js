@@ -1,7 +1,10 @@
 function addFuelList(data) {
+  //data is list of obj
   var newData = [];
   var FuelDict = {}; //'MakeCylinderCount': [Fuels]
+  //for each row of date
   for (const row of data) {
+    //new obj
     var newRowData = {};
 
     m = row.Make;
@@ -14,10 +17,11 @@ function addFuelList(data) {
 
     newRowData.Make = m;
     newRowData.EngineCylinders = c;
-    newRowData.FuelList = FuelDict[m + c];
+    newRowData.FuelList = FuelDict[m + c]; // new data
     newRowData.AverageCityMPG = row.AverageCityMPG;
     newRowData.AverageHighwayMPG = row.AverageHighwayMPG;
     newRowData.Fuel = row.Fuel;
+
 
     newData.push(newRowData);
   }
@@ -28,6 +32,7 @@ async function init() {
   // AWAIT! for data
   data = await d3.csv('https://flunky.github.io/cars2017.csv');
 
+  //unique set of cylinder values
   cylinders = [
     ...new Set(
       data.map((d) => {
@@ -45,8 +50,8 @@ async function init() {
     return b['EngineCylinders'] - a['EngineCylinders'];
   });
 
-  //outer (include axis) 700x800, inner (only chart data) 600x600
-  margin = { left: 150, right: 50, top: 25, bottom: 75 }; //padding
+  //outer (include axis) 900x800, inner (only chart data) 600x600
+  margin = { left: 150, right: 150, top: 25, bottom: 75 }; //padding
   inner_chart = { x: 600, y: 600 };
 
   //domain:  values of x axis (# of cylinders), range of inner chart
@@ -61,57 +66,16 @@ async function init() {
     )
     .range([inner_chart.y, 0]);
 
-  //   fuels = [
-  //     ...new Set(
-  //       data.map((d) => {
-  //         return d.Fuel;
-  //       })
-  //     ),
-  //   ];
-
   // bind fuel type to value
   color = d3.scaleOrdinal(
     ['Gasoline', 'Electricity', 'Diesel'],
     ['red', 'orange', 'blue']
   );
 
-  // create a tooltip
-  tooltip = d3
-    .select('#chart')
-    .append('div')
-    .style('opacity', 0)
-    .attr('class', 'tooltip')
-    .style('background-color', 'white')
-    .style('border', 'solid')
-    .style('border-width', '1px')
-    .style('border-radius', '5px')
-    .style('padding', '10px')
-    .style('position', 'absolute');
-
-  // Three function that change the tooltip when user hover / move / leave a cell
-  mouseover = function (d) {
-    console.log(d)
-    tooltip.style('opacity', 1);
-    d3.select(this).style('stroke', 'black');
-  };
-
-  mousemove = function (d) {
-    console.log(d3.mouse(this));
-    tooltip
-      .html('The exact value of ' + d.EngineCylinders)
-      .style('left', d3.mouse(this)[0] + margin.left + 20 + 'px') // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
-      .style('top', d3.mouse(this)[1] +125 + 'px');
-  };
-
-  // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
-  mouseleave = function (d) {
-    tooltip.style('opacity', 0);
-    d3.select(this).style('stroke', 'none');
-  };
-
   //scatter plot
   //create g
-  d3.select('#chart').select('svg')
+  d3.select('#chart')
+    .select('svg')
     .append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')') //move whole chart
     .selectAll('circle') // create circle
@@ -145,10 +109,12 @@ async function init() {
         return 0.5;
       }
     })
-    // .style('opacity', 0.7)
-    .on('mouseover', mouseover)
-    .on('mousemove', mousemove)
-    .on('mouseleave', mouseleave);
+  // .style('opacity', 0.7)
+
+  // //tooltip
+  // .on('mouseover', mouseover)
+  // .on('mousemove', mousemove)
+  // .on('mouseleave', mouseleave);
 
   //y axis
   d3.select('svg')
@@ -188,5 +154,75 @@ async function init() {
     .style('font-size', 18)
     .text('Engine Cylinders');
 
-  
+
+  const type = d3.annotationCalloutCircle;
+
+  const annotations = [
+    {
+      note: {
+        title: 'Economical brands',
+        label:
+          'Focus on 4-8 cylinder engines for fuel efficiency and affordability',
+        wrap: 300,
+      },
+      //can use x, y directly instead of data
+      dy: -80,
+      dx: 162,
+      x: margin.left + 315,
+      y: margin.top + 250,
+      subject: {
+        radius: 175,
+        radiusPadding: 5,
+      },
+    },
+    {
+      note: {
+        title: 'Luxury brands',
+        label: 'Offers larger engines for enhanced power',
+        wrap: 200,
+      },
+      //can use x, y directly instead of data
+      dy: -80,
+      dx: 0,
+      x: margin.left + 550,
+      y: margin.top + 525,
+      subject: {
+        radius: 75,
+        radiusPadding: 5,
+      },
+    },
+    {
+      note: {
+        title: 'Tesla: Example of Electric Vehicle Brands',
+        label: 'Use engines with zero cylinders',
+        wrap: 300,
+      },
+      //can use x, y directly instead of data
+      dy: 0,
+      dx: 200,
+      x: margin.left + 45,
+      y: margin.top,
+      subject: {
+        radius: 8,
+        radiusPadding: 5,
+      },
+    },
+  ];
+
+  const makeAnnotations = d3
+    .annotation()
+    //also can set and override in the note.padding property
+    //of the annotation object
+    .type(type)
+    .annotations(annotations);
+
+  d3.select('svg')
+    .append('g')
+    .attr('class', 'annotation-group')
+    .call(makeAnnotations)
+    // .style('opacity', 0)
+    // .transition()
+    // .delay(500)
+    // .duration(1000)
+    // .style('opacity', 1);
 }

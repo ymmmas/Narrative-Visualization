@@ -1,0 +1,13 @@
+.parent {
+  /* text-align: center;
+   */
+   position: relative;
+}
+.child {
+  display: inline-block; /*make child containers side by side*/
+  vertical-align: top;
+
+}
+/* .subchild{
+    vertical-align: middle;
+} */

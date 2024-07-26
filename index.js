@@ -155,6 +155,7 @@ async function init() {
     .text('Engine Cylinders');
 
 
+  //add annotations
   const type = d3.annotationCalloutCircle;
 
   const annotations = [
@@ -165,7 +166,6 @@ async function init() {
           'Focus on 4-8 cylinder engines for fuel efficiency and affordability',
         wrap: 300,
       },
-      //can use x, y directly instead of data
       dy: -80,
       dx: 162,
       x: margin.left + 315,
@@ -181,7 +181,6 @@ async function init() {
         label: 'Offers larger engines for enhanced power',
         wrap: 200,
       },
-      //can use x, y directly instead of data
       dy: -80,
       dx: 0,
       x: margin.left + 550,
@@ -197,10 +196,9 @@ async function init() {
         label: 'Use engines with zero cylinders',
         wrap: 300,
       },
-      //can use x, y directly instead of data
       dy: 0,
       dx: 200,
-      x: margin.left + 45,
+      x: margin.left + 46,
       y: margin.top,
       subject: {
         radius: 8,
@@ -211,8 +209,6 @@ async function init() {
 
   const makeAnnotations = d3
     .annotation()
-    //also can set and override in the note.padding property
-    //of the annotation object
     .type(type)
     .annotations(annotations);
 
@@ -220,9 +216,102 @@ async function init() {
     .append('g')
     .attr('class', 'annotation-group')
     .call(makeAnnotations)
-    // .style('opacity', 0)
-    // .transition()
-    // .delay(500)
-    // .duration(1000)
-    // .style('opacity', 1);
+    //make it appear later
+    .style('opacity', 0)
+    .transition()
+    .delay(500)
+    .duration(1000)
+    .style('opacity', 1);
+
+
+  //describe color labels for fuels
+  // const fuelTypes = ['Electricity', 'Diesel & Gasoline', 'Gasoline'];
+  const fuelTypes = [
+    'Electricity;    1',
+    'Electricity;    >= 2',
+    'Diesel & Gasoline',
+    'Gasoline;    1',
+    'Gasoline;    >= 2'
+  ];
+  // const fuelTypes = [
+  //   '1 Electricity',
+  //   '>= 2 Electricity',
+  //   'Diesel & Gasoline',
+  //   '1 Gasoline',
+  //   '>= 2 Gasoline',
+  // ];
+  countColor = d3.scaleOrdinal(
+    [
+      'Electricity;    1',
+      'Electricity;    >= 2',
+      'Diesel & Gasoline',
+      'Gasoline;    1',
+      'Gasoline;    >= 2',
+    ],
+    ['orange', 'orange', 'blue', 'red', 'red']
+  );
+  const colorWidth = 30;
+  // select the outerest div
+  d3.select('#color-filter')
+    //create svg & g
+    .select('svg')
+    .append('g')
+    .attr('id', 'colorTable') // assign id to newly made svg
+    .attr('transform', 'translate(' + 20 + ',' + (margin.top )+ ')') //padding
+
+    .selectAll()
+    .data(fuelTypes) //import data
+    .enter()
+    .append('rect') //add color rects
+    .attr('x', () => {
+      return 0;
+    })
+    .attr('y', (d, i) => {
+      return (i + 1) * 20;
+    })
+    .attr('height', 15)
+    .attr('width', (d) => {
+      return colorWidth;
+    })
+    //fill rect colors based on label
+    .style('fill', (d) => {
+      return countColor(d);
+    })
+    .style('opacity', function (d, i) {
+      console.log(d)
+      if (d.includes('2') || d.includes('Diesel')) {
+        return 1;
+      } else {
+        return 0.5;
+      }
+    });
+
+  //create color text labels
+  d3.select('#colorTable') // select inner container just created
+    .selectAll()
+    .data(fuelTypes)  //import data
+    .enter()
+
+    //add labels 
+    .append('text')
+    .attr('x', () => {
+      return colorWidth + 10;
+    })
+    .attr('y', (d, i) => {
+      return (i + 1.7) * 20;
+    })
+    .attr('height', 15)
+    .attr('width', (d) => {
+      return colorWidth;
+    })
+    .text((d) => {
+      return d;
+    });
+
+  //create title for color-fuel labels 
+  d3.select('#colorTable') // select inner container just created
+    .append('text')
+    .text('Fuel Type;   Value Counts');
+
+  
 }

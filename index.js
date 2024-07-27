@@ -225,26 +225,19 @@ async function init() {
 
 
   //describe color labels for fuels
-  // const fuelTypes = ['Electricity', 'Diesel & Gasoline', 'Gasoline'];
   const fuelTypes = [
     'Electricity;    1',
     'Electricity;    >= 2',
-    'Diesel & Gasoline',
+    'Diesel & Gasoline;    >= 2',
     'Gasoline;    1',
-    'Gasoline;    >= 2'
+    'Gasoline;    >= 2',
   ];
-  // const fuelTypes = [
-  //   '1 Electricity',
-  //   '>= 2 Electricity',
-  //   'Diesel & Gasoline',
-  //   '1 Gasoline',
-  //   '>= 2 Gasoline',
-  // ];
+
   countColor = d3.scaleOrdinal(
     [
       'Electricity;    1',
       'Electricity;    >= 2',
-      'Diesel & Gasoline',
+      'Diesel & Gasoline;    >= 2',
       'Gasoline;    1',
       'Gasoline;    >= 2',
     ],

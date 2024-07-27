@@ -24,18 +24,34 @@
                 <button class="nextButton" onclick="">Next</button>
             </a> 
         </h1>
-        <p>conclusions made</p>
+        <p>
+            As the number of engine cylinders increases, the average city MPG tends to decrease.
+            <br/>
+            Vehicles with fewer engine cylinders also tend to have higher average city MPG.
+            Vehicles with fewer cylinders will have higher city MPG because they are more efficient in stop-and-go traffic conditions.
+            <br/>
+            Reason: In city driving conditions, smaller engines benefit from lower fuel consumption during stop-and-go traffic and idling. Vehicles with fewer cylinders are generally lighter and more efficient in urban environments.
+        </p>
     </div>
 
-    <!-- chart container -->
-    <div id="chart">
-        <!-- outer (include axis) 700x800, inner (only chart data) 600x600 -->
-        <svg width=800 height=700>
-        </svg>
-    </div>
+    <div class="parent">
+        <!-- chart container -->
+        <div class ='child' id="chart">
+            <!-- outer (include axis) 900x700, inner (only chart data) 600x600 -->
+            <svg width=900 height=700>
+            </svg>
+        </div>
 
-    <!-- explantation /filter container (right or bottom)-->
-    <div>
+        <!-- explantation /filter container (right or bottom)-->
+        <div class ='child' id ="labels" >
+            <div class="subchild">
+                <div id="color-filter">
+                    <svg>
+                    </svg>
+                </div>
+            </div>
+            
+        </div>
     </div>
 
 </body>

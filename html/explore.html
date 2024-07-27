@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel="stylesheet" href="style.css" />
+    <!-- tab title -->
+    <title>Narrative Visualization</title>
+</head>
+
+<body onload="init()">
+    <!-- load d3 -->
+    <script src='https://d3js.org/d3.v5.min.js'></script>
+
+    <!-- load js for cur page -->
+    <script src="../js/explor.js"></script>
+
+    <!-- load d3 annotation -->
+    <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+
+    <!-- overview container -->
+    <div id=AverageHighwayMPG class="data-value">
+        <h1>HighwayMPG MPG & cylinders
+            <a href="../index.html">
+                <button class="nextButton" onclick="">Back to first page</button>
+            </a> 
+        </h1>
+        <p>conclusions made</p>
+    </div>
+
+    <div class="parent">
+        <!-- chart container -->
+        <div class ='child' id="chart">
+            <!-- outer (include axis) 900x700, inner (only chart data) 600x600 -->
+            <svg width=900 height=700>
+            </svg>
+        </div>
+
+        <!-- explantation /filter container (right or bottom)-->
+        <div class ='child' id ="labels" >
+            <div class="subchild">
+                <div id="color-filter">
+                    <svg>
+                    </svg>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+</body>
+
+<footer>
+    Data Source: <a href="https://flunky.github.io/cars2017.csv">Fuel Efficiency Data of 2017</a>.
+    Credit to: <a href="https://d3js.org/">D3</a> and <a href="https://d3-annotation.susielu.com/">D3-Annotation</a>.
+</footer>
+
+</html>

@@ -8,6 +8,10 @@
   vertical-align: top;
 
 }
-/* .subchild{
-    vertical-align: middle;
-} */
+.subchild{
+    /* vertical-align: middle; */
+    /* display: inline-block; */
+    vertical-align: top;
+    /* margin-top: 25px; */
+    margin-left: 50px;
+}

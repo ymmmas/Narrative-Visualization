@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <head>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../style.css" />
     <!-- tab title -->
     <title>Narrative Visualization</title>
 </head>
@@ -17,8 +17,8 @@
     <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 
     <!-- overview container -->
-    <div id=AverageHighwayMPG class="data-value">
-        <h1>HighwayMPG MPG & cylinders
+    <div id=AverageMPG class="data-value">
+        <h1>Average MPG & cylinders. Explore this page!
             <a href="../index.html">
                 <button class="nextButton" onclick="">Back to first page</button>
             </a> 
@@ -37,9 +37,59 @@
         <!-- explantation /filter container (right or bottom)-->
         <div class ='child' id ="labels" >
             <div class="subchild">
-                <div id="color-filter">
+                <div id="fuel-colors">
                     <svg>
                     </svg>
+                </div>
+            </div>
+
+            <div class="subchild">
+                <div id ='fuel-selection'>
+                    Fuel Selection
+                    <br>
+                    <form id="fuel-checkbox" autocomplete="off">
+                        <input type="checkbox" value="Diesel" >Diesel<br>
+                        <input type="checkbox" value="Electricity" >Electricity<br>
+                        <input type="checkbox" value="Gasoline" >Gasoline<br>
+                    </form>
+                </div>   
+            </div>
+
+            <br>
+            <br>
+            <br>
+            
+            <div class="subchild">
+                <div id ='city-highway-selection'>
+                    City / Highway MPG Selection
+                    <br/>
+                    <select id="city-highway-dropdown" autocomplete="off">
+                        <option value="AverageCityMPG" >Average City MPG</option>
+                        <option value="AverageHighwayMPG" >Average Highway MPG</option>
+                        <option value="AverageCombinedMPG" >Average Combined MPG</option>
+                    </select>
+                </div>
+            </div>
+
+            <br>
+            <br>
+            <br>
+            
+            <div class="subchild">
+                <div id ='make-selection'>
+                    Make Selection 
+                    <br/>
+                    <select id="make-dropdown" autocomplete="off">
+                        <option value="AverageCityMPG" >Average City MPG</option>
+                        <option value="AverageHighwayMPG" >Average Highway MPG</option>
+                        <option value="AverageCombinedMPG" >Average Combined MPG</option>
+                        <option value="AverageCityMPG" >Average City MPG</option>
+                        <option value="AverageHighwayMPG" >Average Highway MPG</option>
+                        <option value="AverageCombinedMPG" >Average Combined MPG</option>
+                        <option value="AverageCityMPG" >Average City MPG</option>
+                        <option value="AverageHighwayMPG" >Average Highway MPG</option>
+                        <option value="AverageCombinedMPG" >Average Combined MPG</option>
+                    </select>
                 </div>
             </div>
             

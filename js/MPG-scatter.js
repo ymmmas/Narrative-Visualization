@@ -12,13 +12,56 @@ async function init() {
   //domain:  values of x axis (# of cylinders), range of inner chart
   x = d3.scaleLinear().domain([-1, 12]).range([0, inner_chart.x]);
   //domain: values of y axis (cityMPG), range of inner chart
-  y = d3.scaleLinear().domain([0, 150]).range([inner_chart.y, 0]);
+  // y = d3.scaleLinear().domain([0, 150]).range([inner_chart.y, 0]);
+  y = d3.scaleLog([10, 150], [inner_chart.y, 0]).base(10);
 
   // bind fuel type to value
   color = d3.scaleOrdinal(
     ['Gasoline', 'Electricity', 'Diesel'],
     ['red', 'orange', 'blue']
   );
+
+  // create a tooltip
+  //show tooltip box & outline circle when selected
+  tooltip = d3
+    .select('#chart')
+    .append('div')
+    .style('opacity', 0)
+    .attr('class', 'tooltip')
+    .style('background-color', 'white')
+    .style('border', 'solid')
+    .style('border-width', '1px')
+    .style('border-radius', '5px')
+    .style('padding', '10px')
+    .style('position', 'absolute');
+
+  // Three function that change the tooltip when user hover / move / leave a cell
+  mouseover = function (d) {
+    console.log(d);
+    tooltip.style('opacity', 1);
+    d3.select(this).style('stroke', 'black');
+  };
+
+  mousemove = function (d) {
+    console.log(d3.mouse(this));
+    tooltip
+      .html(
+        'cylinders: ' +
+          d.EngineCylinders +
+          ' mpg: ' +
+          d[value] +
+          ' fuel: ' +
+          d.Fuel
+      ) // need edit
+      .style('left', d3.mouse(this)[0] + margin.left + 20 + 'px')
+      .style('top', d3.mouse(this)[1] + 125 + 'px');
+  };
+
+  // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+  mouseleave = function (d) {
+    tooltip.style('opacity', 0);
+    d3.select(this).style('stroke', 'none');
+  };
 
   //scatter plot
   //create g
@@ -44,14 +87,25 @@ async function init() {
     .style('fill', function (d, i) {
       return color(d.Fuel);
     })
-    .style('opacity', 0.5);
+    .style('opacity', 0.5)
+    .on('mouseover', mouseover)
+    .on('mousemove', mousemove)
+    .on('mouseleave', mouseleave);
 
   //y axis
   d3.select('svg')
     .append('g')
     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
     .style('font-size', 20)
-    .call(d3.axisLeft(y));
+    .call(
+      d3.axisLeft(y).tickFormat(function (e) {
+        if (Math.abs(e) != e) {
+          return;
+        }
+
+        return e;
+      })
+    );
 
   //x axis, y translate value is range+margin (need to be placed at bottom)
   d3.select('svg')
@@ -91,7 +145,7 @@ async function init() {
       {
         note: {
           title: '4-cylinder vehicles',
-          label: 'achieve around 30-40 MPG',
+          label: 'achieve around 20-40 MPG',
           wrap: 300,
         },
         dy: -80,
@@ -201,6 +255,7 @@ async function init() {
     .delay(500)
     .duration(1000)
     .style('opacity', 1);
+
 
   //describe color labels for fuels
   const fuelTypes = [

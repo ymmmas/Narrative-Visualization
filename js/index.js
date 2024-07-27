@@ -33,13 +33,13 @@ async function init() {
   data = await d3.csv('https://flunky.github.io/cars2017.csv');
 
   //unique set of cylinder values
-  cylinders = [
-    ...new Set(
-      data.map((d) => {
-        return d.EngineCylinders;
-      })
-    ),
-  ];
+  // cylinders = [
+  //   ...new Set(
+  //     data.map((d) => {
+  //       return d.EngineCylinders;
+  //     })
+  //   ),
+  // ];
 
   //added fuel list to data
   data = addFuelList(data);

@@ -1,3 +1,21 @@
+.main{
+    position: relative;
+    margin: 1rem;
+    text-align: center;
+}
+.main-sub{
+    display: inline-block;
+    
+    /* vertical-align: middle; */
+}
+.nextButton{
+    margin-left: 20px;
+}
+
+.para{
+    margin: 1rem;
+}
+
 .parent {
   /* text-align: center;
    */
@@ -8,6 +26,7 @@
   vertical-align: top;
 
 }
+
 .subchild{
     /* vertical-align: middle; */
     /* display: inline-block; */

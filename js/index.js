@@ -22,7 +22,6 @@ function addFuelList(data) {
     newRowData.AverageHighwayMPG = row.AverageHighwayMPG;
     newRowData.Fuel = row.Fuel;
 
-
     newData.push(newRowData);
   }
   return newData;
@@ -32,18 +31,8 @@ async function init() {
   // AWAIT! for data
   data = await d3.csv('https://flunky.github.io/cars2017.csv');
 
-  //unique set of cylinder values
-  // cylinders = [
-  //   ...new Set(
-  //     data.map((d) => {
-  //       return d.EngineCylinders;
-  //     })
-  //   ),
-  // ];
-
   //added fuel list to data
   data = addFuelList(data);
-  // console.log(data);
 
   // sort based on # cylinders
   data.sort((a, b) => {
@@ -72,90 +61,54 @@ async function init() {
     ['red', 'orange', 'blue']
   );
 
-  //scatter plot
-  //create g
-  d3.select('#chart')
-    .select('svg')
-    .append('g')
-    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')') //move whole chart
-    .selectAll('circle') // create circle
-    .data(data) //import data
-    .enter()
-    .append('circle') //adds circle
+  /* 
+        tooltip 
+        */
+  // create a tooltip
+  //show tooltip box & outline circle when selected
+  tooltip = d3
+    .select('#chart')
+    .append('div')
+    .style('opacity', 0)
+    .attr('class', 'tooltip')
+    .style('background-color', 'white')
+    .style('border', 'solid')
+    .style('border-width', '1px')
+    .style('border-radius', '5px')
+    .style('padding', '10px')
+    .style('position', 'absolute');
 
-    //d: data, i: index, from csv
-    .attr('cx', function (d, i) {
-      return x(d.EngineCylinders);
-    })
-    .attr('cy', function (d, i) {
-      return y(d.Make);
-    })
-    //Number(d.EngineCylinders) + 2.5
-    .attr('r', function (d, i) {
-      return 5;
-    })
-    //fill in color based on fuel type
-    .style('fill', function (d, i) {
-      if (d.FuelList.includes('Gasoline') && d.FuelList.includes('Diesel')) {
-        return 'blue';
-      }
-      return color(d.Fuel);
-    })
-    // change opacity of color based on fuel amount
-    .style('opacity', function (d, i) {
-      if (d.FuelList.length > 1) {
-        return 0.7;
-      } else {
-        return 0.5;
-      }
-    })
-  // .style('opacity', 0.7)
+  // Three function that change the tooltip when user hover / move / leave a cell
+  mouseover = function (d) {
+    // console.log(d);
+    tooltip.style('opacity', 1);
+    d3.select(this).style('stroke', 'black');
+  };
 
-  // //tooltip
-  // .on('mouseover', mouseover)
-  // .on('mousemove', mousemove)
-  // .on('mouseleave', mouseleave);
+  mousemove = function (d) {
+    // console.log(d3.mouse(this));
+    tooltip
+      .html(
+        '<p> <b>Cylinder Count: </b>' +
+          d.EngineCylinders +
+          '</p> <p> <b>Fuel(s): </b>' +
+          d.FuelList +
+          '</p> <p> <b>Make(s): </b>' +
+          d.Make +
+          '</p>'
+      )
+      .style('left', d3.mouse(this)[0] + margin.left + 20 + 'px')
+      .style('top', d3.mouse(this)[1] + margin.top + 'px');
+  };
 
-  //y axis
-  d3.select('svg')
-    .append('g')
-    .attr(
-      'transform',
-      'translate(' + margin.left + ',' + (margin.top - 5) + ')'
-    )
-    .call(d3.axisLeft(y));
-
-  //x axis, y translate value is range+margin (need to be placed at bottom)
-  d3.select('svg')
-    .append('g')
-    .attr(
-      'transform',
-      'translate(' + margin.left + ',' + (inner_chart.y + margin.top) + ')'
-    )
-    .style('font-size', 14)
-    .call(d3.axisBottom(x));
-
-  //y axis label
-  d3.select('svg')
-    .append('text')
-    .attr('text-anchor', 'end')
-    .attr('transform', 'rotate(-90)')
-    .attr('y', margin.left - 120)
-    .attr('x', margin.top - 325)
-    .style('font-size', 18)
-    .text('Make');
-
-  //x axis label
-  d3.select('svg')
-    .append('text')
-    .attr('text-anchor', 'end')
-    .attr('x', margin.left + 350)
-    .attr('y', inner_chart.y + margin.top + 50)
-    .style('font-size', 18)
-    .text('Engine Cylinders');
-
+  // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+  mouseleave = function (d) {
+    tooltip.style('opacity', 0);
+    d3.select(this).style('stroke', 'none');
+  };
 
   //add annotations
+  // put annotations infornt of data points so you can select tooltip
   const type = d3.annotationCalloutCircle;
 
   const annotations = [
@@ -207,12 +160,10 @@ async function init() {
     },
   ];
 
-  const makeAnnotations = d3
-    .annotation()
-    .type(type)
-    .annotations(annotations);
+  const makeAnnotations = d3.annotation().type(type).annotations(annotations);
 
-  d3.select('svg')
+  d3.select('#chart')
+    .select('svg')
     .append('g')
     .attr('class', 'annotation-group')
     .call(makeAnnotations)
@@ -223,34 +174,95 @@ async function init() {
     .duration(1000)
     .style('opacity', 1);
 
+  //scatter plot
+  //create g
+  d3.select('#chart')
+    .select('svg')
+    .append('g')
+    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')') //move whole chart
+    .selectAll('circle') // create circle
+    .data(data) //import data
+    .enter()
+    .append('circle') //adds circle
 
-  //describe color labels for fuels
-  const fuelTypes = [
-    'Electricity;    1',
-    'Electricity;    >= 2',
-    'Diesel & Gasoline;    >= 2',
-    'Gasoline;    1',
-    'Gasoline;    >= 2',
-  ];
+    //d: data, i: index, from csv
+    .attr('cx', function (d, i) {
+      return x(d.EngineCylinders);
+    })
+    .attr('cy', function (d, i) {
+      return y(d.Make);
+    })
+    //Number(d.EngineCylinders) + 2.5
+    .attr('r', function (d, i) {
+      return 5;
+    })
+    //fill in color based on fuel type
+    .style('fill', function (d, i) {
+      if (d.FuelList.includes('Gasoline') && d.FuelList.includes('Diesel')) {
+        return 'blue';
+      }
+      return color(d.Fuel);
+    })
+    .style('opacity', 0.5)
+    .on('mouseover', mouseover)
+    .on('mousemove', mousemove)
+    .on('mouseleave', mouseleave);
 
-  countColor = d3.scaleOrdinal(
-    [
-      'Electricity;    1',
-      'Electricity;    >= 2',
-      'Diesel & Gasoline;    >= 2',
-      'Gasoline;    1',
-      'Gasoline;    >= 2',
-    ],
-    ['orange', 'orange', 'blue', 'red', 'red']
-  );
+  //y axis
+  d3.select('svg')
+    .append('g')
+    .attr(
+      'transform',
+      'translate(' + margin.left + ',' + (margin.top - 5) + ')'
+    )
+    .call(d3.axisLeft(y));
+
+  //x axis, y translate value is range+margin (need to be placed at bottom)
+  d3.select('svg')
+    .append('g')
+    .attr(
+      'transform',
+      'translate(' + margin.left + ',' + (inner_chart.y + margin.top) + ')'
+    )
+    .style('font-size', 14)
+    .call(
+      d3.axisBottom(x).tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+    );
+
+  //y axis label
+  d3.select('svg')
+    .append('text')
+    .attr('text-anchor', 'end')
+    .attr('transform', 'rotate(-90)')
+    .attr('y', margin.left - 120)
+    .attr('x', margin.top - 325)
+    .style('font-size', 18)
+    .text('Make');
+
+  //x axis label
+  d3.select('svg')
+    .append('text')
+    .attr('text-anchor', 'end')
+    .attr('x', margin.left + 350)
+    .attr('y', inner_chart.y + margin.top + 50)
+    .style('font-size', 18)
+    .text('Engine Cylinders');
+
+  /* 
+        fuel types label 
+        describe color labels for fuels
+        */
+  const fuelTypes = ['Electricity', 'Diesel', 'Gasoline'];
+
+  countColor = d3.scaleOrdinal(fuelTypes, ['orange', 'blue', 'red']);
   const colorWidth = 30;
   // select the outerest div
-  d3.select('#color-filter')
+  d3.select('#fuel-colors')
     //create svg & g
     .select('svg')
     .append('g')
     .attr('id', 'colorTable') // assign id to newly made svg
-    .attr('transform', 'translate(' + 20 + ',' + (margin.top )+ ')') //padding
+    .attr('transform', 'translate(' + 0 + ',' + margin.top + ')') //padding
 
     .selectAll()
     .data(fuelTypes) //import data
@@ -270,22 +282,15 @@ async function init() {
     .style('fill', (d) => {
       return countColor(d);
     })
-    .style('opacity', function (d, i) {
-      console.log(d)
-      if (d.includes('2') || d.includes('Diesel')) {
-        return 1;
-      } else {
-        return 0.5;
-      }
-    });
+    .style('opacity', 0.7);
 
-  //create color text labels
+  //create color fuel labels
   d3.select('#colorTable') // select inner container just created
     .selectAll()
-    .data(fuelTypes)  //import data
+    .data(fuelTypes) //import data
     .enter()
 
-    //add labels 
+    //add labels
     .append('text')
     .attr('x', () => {
       return colorWidth + 10;
@@ -301,10 +306,8 @@ async function init() {
       return d;
     });
 
-  //create title for color-fuel labels 
+  //create title for color-fuel labels
   d3.select('#colorTable') // select inner container just created
     .append('text')
-    .text('Fuel Type;   Value Counts');
-
-  
+    .text('Fuel Types');
 }

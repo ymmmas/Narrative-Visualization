@@ -18,21 +18,27 @@
     <script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
 
     <!-- overview container -->
-    <div id=AverageCityMPG class="data-value">
-        <h1>City MPG & cylinders
+    <div class='main' id=AverageCityMPG >
+        <div class="main-sub" >
+            <h1>City MPG & cylinders</h1>
+        </div>
+        <div class="main-sub">
             <a href="./highwayMPG.html">
                 <button class="nextButton" onclick="">Next</button>
             </a> 
-        </h1>
+        </div>
+        
+    </div>
+    <div class="para">
         <p>
             As the number of engine cylinders increases, the average city MPG tends to decrease.
             <br/>
             Vehicles with fewer engine cylinders also tend to have higher average city MPG.
             Vehicles with fewer cylinders will have higher city MPG because they are more efficient in stop-and-go traffic conditions.
             <br/>
-            Reason: In city driving conditions, smaller engines benefit from lower fuel consumption during stop-and-go traffic and idling. Vehicles with fewer cylinders are generally lighter and more efficient in urban environments.
-        </p>
+            Reason: In city driving conditions, smaller engines benefit from lower fuel consumption during stop-and-go traffic and idling. Vehicles with fewer cylinders are generally lighter and more efficient in urban environments.</p>
     </div>
+    
 
     <div class="parent">
         <!-- chart container -->
@@ -45,7 +51,7 @@
         <!-- explantation /filter container (right or bottom)-->
         <div class ='child' id ="labels" >
             <div class="subchild">
-                <div id="color-filter">
+                <div id="fuel-colors">
                     <svg>
                     </svg>
                 </div>

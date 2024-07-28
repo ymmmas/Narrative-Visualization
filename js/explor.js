@@ -112,16 +112,6 @@ async function init() {
     d3.select(this).style('stroke', 'black');
   };
 
-//   AverageCityMPG: '30';
-//   AverageHighwayMPG: '41';
-//   EngineCylinders: '4';
-//   Fuel: 'Diesel';
-//   Make: 'BMW';
-//   avgCyl: ['Diesel'];
-//   avgMPG: 35.5;
-//   cityCyl: (3)[('Diesel', 'Gasoline', 'Diesel')];
-//   hwCyl: ['Diesel'];
-
   mousemove = function (d) {
     // console.log(d3.mouse(this));
     tooltip
@@ -267,7 +257,7 @@ async function init() {
     .style('fill', (d) => {
       return countColor(d);
     })
-    .style('opacity', 0.5);
+    .style('opacity', 0.7);
 
   //create color fuel labels
   d3.select('#colorTable') // select inner container just created
@@ -389,7 +379,7 @@ async function init() {
     mousemove = function (d) {
       tooltip
         .html(
-          '<b>'+ MPGtext +' </b>' +
+          '<b>'+ MPGtext +': </b>' +
             d[mpg] +
             '<p> <b>Cylinder Count: </b>' +
             d.EngineCylinders +

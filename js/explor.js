@@ -127,7 +127,7 @@ async function init() {
           '</p>'
       )
       .style('left', d3.mouse(this)[0] + margin.left + 20 + 'px')
-      .style('top', d3.mouse(this)[1] + margin.top + 'px');
+      .style('top', d3.mouse(this)[1] + margin.top + 300 + 'px');
   };
 
   // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
@@ -379,7 +379,9 @@ async function init() {
     mousemove = function (d) {
       tooltip
         .html(
-          '<b>'+ MPGtext +': </b>' +
+          '<b>' +
+            MPGtext +
+            ': </b>' +
             d[mpg] +
             '<p> <b>Cylinder Count: </b>' +
             d.EngineCylinders +
@@ -390,7 +392,7 @@ async function init() {
             '</p>'
         )
         .style('left', d3.mouse(this)[0] + margin.left + 20 + 'px')
-        .style('top', d3.mouse(this)[1] + margin.top + 'px');
+        .style('top', d3.mouse(this)[1] + margin.top + 300 + 'px');
     };
 
     mouseleave = function (d) {

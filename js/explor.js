@@ -53,20 +53,20 @@ function addNewData(data) {
 }
 
 async function init() {
-  createChart(['Electricity', 'Diesel', 'Gasoline']);
+//   createChart(['Electricity', 'Diesel', 'Gasoline']);
     
-  async function createChart(fuelSelected) {
+//   async function createChart(fuelSelected) {
     // AWAIT! for data
     data = await d3.csv('https://flunky.github.io/cars2017.csv');
 
     //add new data
     data = addNewData(data);
 
-    const inSelectedFuel = (d) => {
-      return fuelSelected.includes(d.Fuel);
-    };
-    //include only data whoses fuel type is part of selected fuel list
-    data = data.filter(inSelectedFuel);
+    // const inSelectedFuel = (d) => {
+    //   return fuelSelected.includes(d.Fuel);
+    // };
+    // //include only data whoses fuel type is part of selected fuel list
+    // data = data.filter(inSelectedFuel);
     // console.log(filteredData);
 
     //outer (include axis) 700x800, inner (only chart data) 600x600
@@ -289,7 +289,7 @@ async function init() {
         Fuel checkbox
         */
     // current fuel types selected
-    //   fuelSelected = ['Diesel', 'Electricity', 'Gasoline'];
+      fuelSelected = ['Diesel', 'Electricity', 'Gasoline'];
     d3.select('form#fuel-checkbox')
       .selectAll('input')
       .on('change', function () {
@@ -304,59 +304,79 @@ async function init() {
           fuelSelected = fuelSelected.filter((item) => item !== this.value);
           console.log(fuelSelected);
         }
-        createChart(fuelSelected);
+        update(fuelSelected);
       });
-  }
+//   }
 
   /* 
   update func
    */
-//   function update(fuelSelected) {
-//     const inSelectedFuel = (d) => {
-//       return fuelSelected.includes(d.Fuel);
-//     };
-//     //include only data whoses fuel type is part of selected fuel list
-//     filteredData = data.filter(inSelectedFuel);
-//     console.log(filteredData);
+  function update(fuelSelected,mpg,make) {
+    const inSelectedFuel = (d) => {
+      return fuelSelected.includes(d.Fuel);
+    };
+    //include only data whoses fuel type is part of selected fuel list
+    filteredData = data.filter(inSelectedFuel);
+    // console.log(filteredData);
 
-//     updateScatter = d3.select('#chart')
-//       .select('svg')
-//       .select('g')
-//       .selectAll('.circle') // select all circles
-//       .data(filteredData); //import data
+    /*tooltip functions */
+    // Three function that change the tooltip when user hover / move / leave a cell
+    mouseover = function (d) {
+      // console.log(d);
+      tooltip.style('opacity', 1);
+      d3.select(this).style('stroke', 'black');
+    };
 
-//     console.log(updateScatter);
+    mousemove = function (d) {
+      tooltip
+        .html(
+          'cylinders: ' +
+            d.EngineCylinders +
+            ' mpg: ' +
+            d.avgMPG +
+            ' fuel/s: ' +
+            d.avgCyl
+        ) // need edit
+        .style('left', d3.mouse(this)[0] + margin.left + 20 + 'px')
+        .style('top', d3.mouse(this)[1] + margin.top + 'px');
+    };
 
-//     updateScatter.exit().remove();
+    mouseleave = function (d) {
+      tooltip.style('opacity', 0);
+      d3.select(this).style('stroke', 'none');
+    };
 
-//     updateScatter
-//       .enter()
-//       .append('circle')
-//       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')') //move datapoints
-//       .transition()
-//       .duration(750)
+    //select data points
+    updateScatter = d3
+      .select('#chart')
+      .select('svg')
+      .select('g')
+      .selectAll('.circle') // select all circles
+      .data(filteredData); //filter data
 
-//       //d: data, i: index, from csv
-//       .attr('cx', function (d, i) {
-//         return x(d.EngineCylinders);
-//       })
-//       .attr('cy', function (d, i) {
-//         return y(d.avgMPG);
-//       })
-//       //Number(d.EngineCylinders) + 2.5
-//       .attr('r', function (d, i) {
-//         return 5;
-//       }) //fill in color based on fuel type
-//       .style('fill', function (d, i) {
-//         return color(d.Fuel);
-//       });
-//     //   .style('opacity', 0.5)
-//     //   .on('mouseover', mouseover)
-//     //   .on('mousemove', mousemove)
-//     //   .on('mouseleave', mouseleave);
+    d3.selectAll('circle').remove();
 
-//     // updateScatter.exit().remove();
-//   }
+    updateScatter
+      .enter()
+      .append('circle')
+
+      .attr('cx', function (d, i) {
+        return x(d.EngineCylinders);
+      })
+      .attr('cy', function (d, i) {
+        return y(d.avgMPG);
+      })
+      .attr('r', function (d, i) {
+        return 5;
+      }) //fill in color based on fuel type
+      .style('fill', function (d, i) {
+        return color(d.Fuel);
+      })
+      .style('opacity', 0.5)
+      .on('mouseover', mouseover)
+      .on('mousemove', mousemove)
+      .on('mouseleave', mouseleave);
+  }
 //   update(fuelSelected);
     // createChart(['Electricity', 'Diesel', 'Gasoline']);
 }

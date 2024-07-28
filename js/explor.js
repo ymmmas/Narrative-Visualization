@@ -218,10 +218,10 @@ async function init() {
   d3.select('svg')
     .append('text')
     .attr('text-anchor', 'end')
-    .attr('x', margin.left + 350)
+    .attr('x', margin.left + 385)
     .attr('y', inner_chart.y + margin.top + 50)
     .style('font-size', 18)
-    .text('Engine Cylinders');
+    .text('Engine Cylinder Counts');
 
   /* 
         fuel types label 

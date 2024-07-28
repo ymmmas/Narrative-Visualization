@@ -1,6 +1,6 @@
 .main{
     position: relative;
-    margin: 1rem;
+    margin: 0.4rem;
     text-align: center;
 }
 .main-sub{
@@ -10,17 +10,28 @@
 }
 .nextButton{
     margin-left: 20px;
+    transition-duration: 0.4s;
+    font-size: 18px;
+    padding: 8px 18px;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
 }
 
 .para{
-    margin: 1rem;
+    min-width: 90%;
+    min-height:190px;
+    /* max-height: 220px; */
+    margin-left: 2rem;
+    margin-right:2rem;
+    font-size: 18px;
+    font-family: 'Times New Roman', Times, serif;
 }
 
-.parent {
-  /* text-align: center;
-   */
+/* .parent {
+   text-align: center;
+   
    position: relative;
-}
+} */
 .child {
   display: inline-block; /*make child containers side by side*/
   vertical-align: top;
@@ -33,4 +44,11 @@
     vertical-align: top;
     /* margin-top: 25px; */
     margin-left: 50px;
+}
+
+.graph-explain{
+    min-height: 70px;
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+    color: rgb(168, 11, 11);
 }
